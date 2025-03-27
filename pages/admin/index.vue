@@ -1,5 +1,9 @@
 <template>
   <div class="flex flex-col gap-12">
+    <div>
+      <h1>Welcome {{ user.name }}</h1>
+      <button @click="logout">Logout</button>
+    </div>
     <div class="font-semibold">DASHBOARD</div>
     <input type="text" v-model="pageTitle" />
     <input type="text" v-model="pageContent" />
@@ -9,6 +13,16 @@
 
 <script setup>
   import { saveToGitHub } from '~/utils'
+  definePageMeta({
+    middleware: ['authenticated'],
+  })
+
+  const { user, clear: clearSession } = useUserSession()
+
+  async function logout() {
+    await clearSession()
+    await navigateTo('/login')
+  }
   const pageTitle = ref('')
   const pageContent = ref('')
   const createPage = async () => {

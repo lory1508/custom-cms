@@ -14,10 +14,15 @@
   const route = useRoute()
   console.log(route)
   const path = ref(route.path)
-  const { data: home } = await useAsyncData(() => queryCollection('content').path(path.value).first())
+  const home = ref('')
 
-  useSeoMeta({
-    title: home.value?.title,
-    description: home.value?.description,
+  onUpdated(async () => {
+    const { data } = await useFetch(() => queryCollection('content').path(path.value).first())
+    home.value = data
+    console.log(home.value)
+    useSeoMeta({
+      title: home.value?.title,
+      description: home.value?.description,
+    })
   })
 </script>
