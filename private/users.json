@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "name": "Lorenzo",
+    "lastname": "Galassi",
+    "email": "lorenzo.galassi@comune.rivoli.to.it",
+    "username": "l.galassi",
+    "role": "admin",
+    "password": "$2b$10$xdoNxzG0QyusZ6dETR9bweH2ec7aNboK0xA.ttXGbgW3d04BYQBF."
+  }
+]
