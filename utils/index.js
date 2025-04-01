@@ -25,24 +25,38 @@ const saveToGitHub = async (fileName, markdownContent) => {
   console.log('Page created on GitHub:', data)
 }
 
-const saveMediaToGitHub = async (fileName, path, fileContent) => {
-  const response = await fetch(`https://api.github.com/repos/${gitUsername}/${gitRepo}/public/${path}` + fileName, {
-    method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${gitToken}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      message: 'Create new media: ' + fileName,
-      content: btoa(fileContent), // Convert the markdown content to base64
-    }),
-  })
+// GitHub commit function to upload the file
+const saveMediaToGitHub = async (filePath, fileContent, message) => {
+  const url = `https://api.github.com/repos/${gitUsername}/${gitRepo}/contents/${filePath}`
 
-  if (!response.ok) {
-    throw new Error('Failed to save to GitHub')
-  } else {
-    const data = await response.json()
-    console.log('Media created on GitHub:', data)
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json',
+  }
+
+  const data = {
+    message, // Commit message
+    content: fileContent, // Base64 file content
+    branch: 'main', // Branch to commit to
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(data),
+    })
+
+    const result = await response.json()
+
+    if (!response.ok) {
+      throw new Error(result.message || 'GitHub API error')
+    }
+
+    return { success: true, fileUrl: result.content.download_url }
+  } catch (error) {
+    console.error('Error committing to GitHub:', error)
+    return { success: false }
   }
 }
 
